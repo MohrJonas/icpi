@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "containers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "search": {
+            "type": "string"
+          },
+          "install": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "image"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "containers"
+  ]
+}

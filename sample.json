@@ -1,0 +1,13 @@
+{
+  "containers": [
+    {
+      "name": "apt",
+      "install": "DEBIAN_FRONTEND=noninteractive apt install {{ args }}",
+      "image": "docker.io/library/debian:stable"
+    },
+    {
+      "name": "arch",
+      "image": "docker.io/library/archlinux:latest"
+    }
+  ]
+}
