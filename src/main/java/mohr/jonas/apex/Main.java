@@ -1,39 +1,27 @@
 package mohr.jonas.apex;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.val;
 import mohr.jonas.apex.cli.Apex;
-import mohr.jonas.apex.cli.Spinner;
 import mohr.jonas.apex.data.Config;
-import mohr.jonas.apex.util.Failable;
+import mohr.jonas.apex.data.DB;
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Main {
 
 	@SneakyThrows
 	public static void main(String[] args) {
+		Files.createDirectories(Path.of(System.getProperty("user.home"), ".local", "apex", "bin"));
 		AnsiConsole.systemInstall();
-		final Failable<Config> config = Config.readFromDefaultLocations();
-		config.orElseFatal();
-		final Injector inject = Guice.createInjector(new Module(config.getResult()));
-		final CommandLine commandLine = new CommandLine(inject.getInstance(Apex.class));
+		val config = Config.readFromDefaultLocations().orElseFatal();
+		val db = DB.load();
+		Runtime.getRuntime().addShutdownHook(new Thread(db::save));
+		val apex = new Apex(config, db);
+		val commandLine = new CommandLine(apex);
 		System.exit(commandLine.execute(args));
-	}
-
-	@AllArgsConstructor
-	private static final class Module extends AbstractModule {
-
-		private final Config config;
-
-		@Override
-		protected void configure() {
-			bind(Spinner.class).toInstance(new Spinner());
-			bind(DistroboxAdapter.class);
-			bind(Config.class).toInstance(config);
-		}
 	}
 }

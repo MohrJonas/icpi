@@ -9,11 +9,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 public class DistroboxAdapter {
 
@@ -37,12 +38,9 @@ public class DistroboxAdapter {
 	public List<Container> listContainers() throws RuntimeException {
 		val output = runCommand("distrobox-list", "--no-color");
 		val lines = ArrayUtils.remove(output.split("\n"), 0);
-		val pattern = Pattern.compile("^(\\w{12}) \\| (\\w+) +\\| Up (\\d+) (?:hours|minutes) +\\| (\\S+)$");
 		return Arrays.stream(lines).map((line) -> {
-			val matcher = pattern.matcher(line.trim());
-			if (!matcher.find())
-				throw new RuntimeException(String.format("Regex pattern '%s' doesn't match line '%s'", pattern.pattern(), line.trim()));
-			return new Container(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
+			val parts = line.split("\\|");
+			return new Container(parts[0].trim(), parts[1].trim(), parts[2].trim(), parts[3].trim());
 		}).toList();
 	}
 
@@ -74,4 +72,54 @@ public class DistroboxAdapter {
 		return runCommand("distrobox-enter", "--name", name, "--no-tty", "--", upgradeCommandTemplate);
 	}
 
+	public String removePackageFromContainer(String name, String removeCommandTemplate, String... packages) {
+		val jinja = new Jinjava();
+		val context = Map.of("packages", packages);
+		return runCommand("distrobox-enter", "--name", name, "--no-tty", "--", jinja.render(removeCommandTemplate, context));
+	}
+
+	public String removeContainer(String name) {
+		return runCommand("distrobox-rm", "--name", name, "-f", "--rm-home");
+	}
+
+	public String[] getBinariesInContainer(String name) {
+		return runCommand("distrobox-enter", "-n", name, "-T", "--", "bash -c \"find ${PATH//:/ } -maxdepth 1 -executable\"").split("\n");
+	}
+
+	public String[] getDesktopEntriesInContainer(String name) {
+		//TODO
+		return new String[0];
+	}
+
+	@SneakyThrows
+	public String exportFromContainer(String name, ExportType type, String toExport) {
+		switch (type) {
+			case APP -> {
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + toExport + " -ep ~/.local/apex/bin");
+			}
+			case BINARY -> {
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -b " + toExport + " -ep ~/.local/apex/bin");
+			}
+		}
+		return null;
+	}
+
+	@SneakyThrows
+	public String unexportFromContainer(String name, ExportType type, String toExport) {
+		switch (type) {
+			case APP -> {
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + toExport + " -ep ~/.local/bin -d");
+			}
+			case BINARY -> {
+				val parts = toExport.split("/");
+				val binaryName = parts[parts.length - 1];
+				val binarHostPath = Path.of(System.getProperty("user.home"), ".local", "apex", "bin", binaryName);
+				if (Files.exists(binarHostPath))
+					Files.delete(binarHostPath);
+				return "OK";
+			}
+		}
+		return null;
+	}
 }
+

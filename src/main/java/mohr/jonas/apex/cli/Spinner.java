@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Spinner {
 
-	private static final String[] SYMBOLS = {"▁", "▃", "▅", "▃"};
+	private static final String[] SYMBOLS = {"|", "/", "-", "\\"};
 	private int state;
 	private String text = "";
 

@@ -29,6 +29,6 @@ public record Config(@Nullable ContainerTemplate[] containers) {
 
 	public static Failable<ContainerTemplate> getByName(Config config, String name) {
 		val template = Arrays.stream(config.containers).filter((c) -> c.name().equals(name)).findAny();
-		return template.map(Failable::success).orElseGet(() -> Failable.fail(String.format("Unable to find container template with name %s in config", name)));
+		return template.map(Failable::success).orElseGet(() -> Failable.fail(String.format("Unable to find container with name %s in config", name)));
 	}
 }
