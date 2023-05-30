@@ -13,15 +13,15 @@ import java.nio.file.Path;
 
 public class Main {
 
-	@SneakyThrows
-	public static void main(String[] args) {
-		Files.createDirectories(Path.of(System.getProperty("user.home"), ".local", "apex", "bin"));
-		AnsiConsole.systemInstall();
-		val config = Config.readFromDefaultLocations().orElseFatal();
-		val db = DB.load();
-		Runtime.getRuntime().addShutdownHook(new Thread(db::save));
-		val apex = new Apex(config, db);
-		val commandLine = new CommandLine(apex);
-		System.exit(commandLine.execute(args));
-	}
+    @SneakyThrows
+    public static void main(String[] args) {
+        Files.createDirectories(Path.of(System.getProperty("user.home"), ".local", "apex", "bin"));
+        AnsiConsole.systemInstall();
+        val config = Config.readFromDefaultLocations().orElseFatal();
+        val db = DB.load();
+        Runtime.getRuntime().addShutdownHook(new Thread(db::save));
+        val apex = new Apex(config, db);
+        val commandLine = new CommandLine(apex);
+        System.exit(commandLine.execute(args));
+    }
 }
