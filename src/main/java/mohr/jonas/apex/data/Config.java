@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
-public record Config(@Nullable ContainerTemplate[] containers) {
+public record Config(@Nullable ContainerTemplate[] containers, @Nullable List<Integer>[] compatibleVersions) {
 
 	public static Failable<Config> readFromDefaultLocations() {
 		val locations = new Path[]{Path.of("/etc/apex.config"), Path.of(System.getProperty("user.home"), ".config", "apex.config")};

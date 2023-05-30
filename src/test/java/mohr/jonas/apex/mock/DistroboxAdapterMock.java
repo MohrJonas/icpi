@@ -45,7 +45,7 @@ public class DistroboxAdapterMock extends DistroboxAdapter {
 	}
 
 	@Override
-	public String setupContainer(String name, String image) {
+	public String setupContainer(String name, String image, String installCommandTemplate) {
 		return "Done mock-setting-up in container";
 	}
 }

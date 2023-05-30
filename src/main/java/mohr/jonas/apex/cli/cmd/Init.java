@@ -30,7 +30,7 @@ public class Init {
 		Arrays.stream(config.containers()).forEach((template) -> {
 			logger.log(Level.INFO, "Setting up container {0}", template.name());
 			spinner.spinUntilDone(String.format("Setting up container '%s'", template.name()), CompletableFuture.supplyAsync(() -> {
-				logger.log(Level.INFO, adapter.setupContainer(template.name(), template.image()));
+				logger.log(Level.INFO, adapter.setupContainer(template.name(), template.image(), template.install()));
 				return null;
 			}));
 		});

@@ -2,6 +2,7 @@ package mohr.jonas.apex.cli.cmd;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
+import lombok.SneakyThrows;
 import lombok.val;
 import mohr.jonas.apex.DistroboxAdapter;
 import mohr.jonas.apex.ExportType;
@@ -9,9 +10,11 @@ import mohr.jonas.apex.cli.Spinner;
 import mohr.jonas.apex.cli.Terminal;
 import mohr.jonas.apex.data.Config;
 import mohr.jonas.apex.data.DB;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
@@ -72,8 +75,21 @@ public class Install {
 		return 0;
 	}
 
+	@SneakyThrows
 	private void askForExport(String name, String binary) {
+		if (collidesWithHostBinary(binary))
+			terminal.warning("Binary %s will conflict with host binary", binary);
 		if (terminal.askForBoolean(String.format(">> Export binary '%s'? (y/n)", binary), "y", "n"))
 			adapter.exportFromContainer(name, ExportType.BINARY, binary);
+	}
+
+	@SneakyThrows
+	private boolean collidesWithHostBinary(String binary) {
+		val process = new ProcessBuilder()
+				.command("bash", "-c", "\"compgen -c\"")
+				.start();
+		process.waitFor();
+		val hostBinaries = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8).trim().split("\n");
+		return ArrayUtils.contains(hostBinaries, binary);
 	}
 }

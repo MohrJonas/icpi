@@ -76,9 +76,9 @@ public class Apex implements Callable<Integer> {
 		protected void configure() {
 			bind(Spinner.class).in(Scopes.SINGLETON);
 			bind(Config.class).toInstance(config);
-			bind(DistroboxAdapter.class).in(Scopes.SINGLETON);
 			bind(Terminal.class).in(Scopes.SINGLETON);
 			bind(DB.class).toInstance(db);
+			bind(DistroboxAdapter.class).in(Scopes.SINGLETON);
 		}
 	}
 }

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class DistroboxAdapter {
 
@@ -27,11 +28,9 @@ public class DistroboxAdapter {
 
 	@SneakyThrows
 	private static String runCommand(String... command) {
-		val process = new ProcessBuilder()
-				.command(command)
-				.start();
+		val process = new ProcessBuilder().command(command).start();
 		process.waitFor();
-		System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8).trim());
+		//System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8).trim());
 		return IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8).trim();
 	}
 
@@ -56,8 +55,10 @@ public class DistroboxAdapter {
 		return runCommand("distrobox-enter", "--name", name, "--no-tty", "--", jinja.render(searchCommandTemplate, context));
 	}
 
-	public String setupContainer(String name, String image) {
-		return runCommand("distrobox-create", "--image", image, "--name", name, "--yes");
+	public String setupContainer(String name, String image, String installCommandTemplate) {
+		val jinja = new Jinjava();
+		val context = Map.of("packages", new String[]{"which", "bash"});
+		return runCommand("distrobox-create", "--image", image, "--name", name, "--yes", "--pre-init-hooks", jinja.render(installCommandTemplate, context));
 	}
 
 	public String upgradeContainer(String name) {
@@ -83,7 +84,11 @@ public class DistroboxAdapter {
 	}
 
 	public String[] getBinariesInContainer(String name) {
-		return runCommand("distrobox-enter", "-n", name, "-T", "--", "bash -c \"find ${PATH//:/ } -maxdepth 1 -executable\"").split("\n");
+		return runCommand("distrobox-enter", "-n", name, "-T", "--", "bash", "-c", "\"compgen -c\"").split("\n");
+	}
+
+	public String getAbsoluteBinaryPath(String name, String binary) {
+		return runCommand("distrobox-enter", "-n", name, "-T", "--", "which", binary);
 	}
 
 	public String[] getDesktopEntriesInContainer(String name) {
@@ -93,12 +98,13 @@ public class DistroboxAdapter {
 
 	@SneakyThrows
 	public String exportFromContainer(String name, ExportType type, String toExport) {
+		val absoluteBinaryPath = getAbsoluteBinaryPath(name, toExport);
 		switch (type) {
 			case APP -> {
-				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + toExport + " -ep ~/.local/apex/bin");
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + absoluteBinaryPath + " -ep ~/.local/apex/bin");
 			}
 			case BINARY -> {
-				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -b " + toExport + " -ep ~/.local/apex/bin");
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -b " + absoluteBinaryPath + " -ep ~/.local/apex/bin");
 			}
 		}
 		return null;
@@ -106,20 +112,29 @@ public class DistroboxAdapter {
 
 	@SneakyThrows
 	public String unexportFromContainer(String name, ExportType type, String toExport) {
+		val absoluteBinaryPath = getAbsoluteBinaryPath(name, toExport);
 		switch (type) {
 			case APP -> {
-				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + toExport + " -ep ~/.local/bin -d");
+				return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + absoluteBinaryPath + " -ep ~/.local/bin -d");
 			}
 			case BINARY -> {
 				val parts = toExport.split("/");
 				val binaryName = parts[parts.length - 1];
 				val binarHostPath = Path.of(System.getProperty("user.home"), ".local", "apex", "bin", binaryName);
-				if (Files.exists(binarHostPath))
-					Files.delete(binarHostPath);
+				if (Files.exists(binarHostPath)) Files.delete(binarHostPath);
 				return "OK";
 			}
 		}
 		return null;
+	}
+
+	private List<Integer> getVersion() {
+		val pattern = Pattern.compile("^distrobox:\\s(\\d+(?:\\.\\d+)*)$");
+		val output = runCommand("distrobox", "version");
+		val matcher = pattern.matcher(output);
+		if (!matcher.find())
+			throw new RuntimeException(String.format("Regex %s doesn't match string %s", pattern.pattern(), output));
+		return Arrays.stream(matcher.group(1).split("\\.")).map(Integer::parseInt).toList();
 	}
 }
 
