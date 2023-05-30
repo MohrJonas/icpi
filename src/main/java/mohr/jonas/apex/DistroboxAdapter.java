@@ -34,6 +34,10 @@ public class DistroboxAdapter {
 		return IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8).trim();
 	}
 
+	private String deescalatePrivilege(String command) {
+		return command.replace("sudo", "").replace("doas", "").trim();
+	}
+
 	public List<Container> listContainers() throws RuntimeException {
 		val output = runCommand("distrobox-list", "--no-color");
 		val lines = ArrayUtils.remove(output.split("\n"), 0);
@@ -58,7 +62,7 @@ public class DistroboxAdapter {
 	public String setupContainer(String name, String image, String installCommandTemplate) {
 		val jinja = new Jinjava();
 		val context = Map.of("packages", new String[]{"which", "bash"});
-		return runCommand("distrobox-create", "--image", image, "--name", name, "--yes", "--pre-init-hooks", jinja.render(installCommandTemplate, context));
+		return runCommand("distrobox-create", "--image", image, "--name", name, "--yes", "--pre-init-hooks", deescalatePrivilege(jinja.render(installCommandTemplate, context)));
 	}
 
 	public String upgradeContainer(String name) {
