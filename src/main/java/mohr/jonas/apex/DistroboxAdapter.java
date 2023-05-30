@@ -30,7 +30,7 @@ public class DistroboxAdapter {
 	private static String runCommand(String... command) {
 		val process = new ProcessBuilder().command(command).start();
 		process.waitFor();
-		//System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8).trim());
+		System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8).trim());
 		return IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8).trim();
 	}
 
