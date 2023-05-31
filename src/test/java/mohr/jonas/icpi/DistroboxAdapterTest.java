@@ -1,9 +1,9 @@
-package mohr.jonas.apex;
+package mohr.jonas.icpi;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import lombok.val;
-import mohr.jonas.apex.mock.DistroboxAdapterMock;
+import mohr.jonas.icpi.mock.DistroboxAdapterMock;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

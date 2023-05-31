@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>mohr.jonas</groupId>
-    <artifactId>apex</artifactId>
+    <artifactId>icpi</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -116,7 +116,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>mohr.jonas.apex.Main</mainClass>
+                                    <mainClass>mohr.jonas.icpi.Main</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>

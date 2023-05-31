@@ -1,8 +1,8 @@
-package mohr.jonas.apex.mock;
+package mohr.jonas.icpi.mock;
 
 import com.google.inject.Inject;
-import mohr.jonas.apex.DistroboxAdapter;
-import mohr.jonas.apex.data.Container;
+import mohr.jonas.icpi.DistroboxAdapter;
+import mohr.jonas.icpi.data.Container;
 
 import java.util.List;
 import java.util.logging.Logger;

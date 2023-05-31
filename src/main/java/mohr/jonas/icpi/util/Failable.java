@@ -1,4 +1,4 @@
-package mohr.jonas.apex.util;
+package mohr.jonas.icpi.util;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package mohr.jonas.apex.data;
+package mohr.jonas.icpi.data;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Cleanup;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class DB implements Serializable {
 
-    private static final Path PATH = Path.of(System.getProperty("user.home"), ".local", "apex", "package.db");
+    private static final Path PATH = Path.of(System.getProperty("user.home"), ".local", "icpi", "package.db");
 
     @Getter
     private final Map<String, List<String>> packages = new HashMap<>();

@@ -1,4 +1,4 @@
-package mohr.jonas.apex.data;
+package mohr.jonas.icpi.data;
 
 import org.jetbrains.annotations.Nullable;
 

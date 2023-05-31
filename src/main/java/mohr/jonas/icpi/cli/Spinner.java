@@ -1,4 +1,4 @@
-package mohr.jonas.apex.cli;
+package mohr.jonas.icpi.cli;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;

@@ -1,10 +1,10 @@
-package mohr.jonas.apex;
+package mohr.jonas.icpi;
 
 import com.google.inject.Inject;
 import com.hubspot.jinjava.Jinjava;
 import lombok.SneakyThrows;
 import lombok.val;
-import mohr.jonas.apex.data.Container;
+import mohr.jonas.icpi.data.Container;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -105,10 +105,10 @@ public class DistroboxAdapter {
         val absoluteBinaryPath = getAbsoluteBinaryPath(name, toExport);
         switch (type) {
             case APP -> {
-                return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + absoluteBinaryPath + " -ep ~/.local/apex/bin");
+                return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -a " + absoluteBinaryPath + " -ep ~/.local/icpi/bin");
             }
             case BINARY -> {
-                return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -b " + absoluteBinaryPath + " -ep ~/.local/apex/bin");
+                return runCommand("distrobox-enter", "-n", name, "-T", "--", "distrobox-export -b " + absoluteBinaryPath + " -ep ~/.local/icpi/bin");
             }
         }
         return null;
@@ -118,7 +118,7 @@ public class DistroboxAdapter {
     public String unexportFromContainer(String name, ExportType type, String binary) {
         val parts = binary.split("/");
         val binaryName = parts[parts.length - 1];
-        val binarHostPath = Path.of(System.getProperty("user.home"), ".local", "apex", "bin", binaryName);
+        val binarHostPath = Path.of(System.getProperty("user.home"), ".local", "icpi", "bin", binaryName);
         if (Files.exists(binarHostPath)) Files.delete(binarHostPath);
         return "OK";
     }

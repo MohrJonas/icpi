@@ -1,14 +1,14 @@
-package mohr.jonas.apex.cli.cmd;
+package mohr.jonas.icpi.cli.cmd;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import lombok.val;
-import mohr.jonas.apex.DistroboxAdapter;
-import mohr.jonas.apex.ExportType;
-import mohr.jonas.apex.cli.Spinner;
-import mohr.jonas.apex.cli.Terminal;
-import mohr.jonas.apex.data.Config;
-import mohr.jonas.apex.data.DB;
+import mohr.jonas.icpi.DistroboxAdapter;
+import mohr.jonas.icpi.ExportType;
+import mohr.jonas.icpi.cli.Spinner;
+import mohr.jonas.icpi.cli.Terminal;
+import mohr.jonas.icpi.data.Config;
+import mohr.jonas.icpi.data.DB;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package mohr.jonas.apex.cli;
+package mohr.jonas.icpi.cli;
 
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;

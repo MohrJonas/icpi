@@ -1,29 +1,29 @@
-package mohr.jonas.apex.cli;
+package mohr.jonas.icpi.cli;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 import lombok.AllArgsConstructor;
-import mohr.jonas.apex.DistroboxAdapter;
-import mohr.jonas.apex.cli.cmd.*;
-import mohr.jonas.apex.data.Config;
-import mohr.jonas.apex.data.DB;
+import mohr.jonas.icpi.DistroboxAdapter;
+import mohr.jonas.icpi.cli.cmd.*;
+import mohr.jonas.icpi.data.Config;
+import mohr.jonas.icpi.data.DB;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
 
 //TODO move color printing into own function
 //TODO add containerName validation
-@CommandLine.Command(name = "apex", mixinStandardHelpOptions = true, version = "apex 1.0.0", description = "Alternative package manager to apx")
-public class Apex implements Callable<Integer> {
+@CommandLine.Command(name = "icpi", mixinStandardHelpOptions = true, version = "1.0.0", description = "Alternative package manager to apx")
+public class Icpi implements Callable<Integer> {
 
     private final Injector injector;
     @CommandLine.Option(names = {"-v", "--verbose"}, description = "Enable verbose output for debugging.", defaultValue = "false")
     @SuppressWarnings("unused")
     private boolean verbose;
 
-    public Apex(Config config, DB db) {
+    public Icpi(Config config, DB db) {
         this.injector = Guice.createInjector(new InjectorModule(config, db));
     }
 
@@ -62,7 +62,7 @@ public class Apex implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("Apex 1.0.0\nUse -h for a list of available commands");
+        System.out.println("Icpi 1.0.0\nUse -h for a list of available commands");
         return 0;
     }
 

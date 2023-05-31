@@ -1,10 +1,10 @@
-package mohr.jonas.apex.cli.cmd;
+package mohr.jonas.icpi.cli.cmd;
 
 import com.google.inject.Inject;
-import mohr.jonas.apex.DistroboxAdapter;
-import mohr.jonas.apex.cli.Spinner;
-import mohr.jonas.apex.cli.Terminal;
-import mohr.jonas.apex.data.Config;
+import mohr.jonas.icpi.DistroboxAdapter;
+import mohr.jonas.icpi.cli.Spinner;
+import mohr.jonas.icpi.cli.Terminal;
+import mohr.jonas.icpi.data.Config;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;

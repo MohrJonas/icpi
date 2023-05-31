@@ -1,9 +1,9 @@
-package mohr.jonas.apex.data;
+package mohr.jonas.icpi.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import lombok.val;
-import mohr.jonas.apex.util.Failable;
+import mohr.jonas.icpi.util.Failable;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
 public record Config(@Nullable ContainerTemplate[] containers, @Nullable List<Integer>[] compatibleVersions) {
 
     public static Failable<Config> readFromDefaultLocations() {
-        val locations = new Path[]{Path.of("/etc/apex.config"), Path.of(System.getProperty("user.home"), ".config", "apex.config")};
+        val locations = new Path[]{Path.of("/etc/acpi.config"), Path.of(System.getProperty("user.home"), ".config", "acpi.config")};
         val location = Arrays.stream(locations).filter(Files::exists).findFirst();
         if (location.isEmpty())
             return Failable.fail(String.format("No config file was found in the following locations: %s", Arrays.toString(locations)));
