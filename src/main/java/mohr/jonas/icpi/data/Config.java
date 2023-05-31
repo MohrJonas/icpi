@@ -15,7 +15,7 @@ import java.util.List;
 public record Config(@Nullable ContainerTemplate[] containers, @Nullable List<Integer>[] compatibleVersions) {
 
     public static Failable<Config> readFromDefaultLocations() {
-        val locations = new Path[]{Path.of("/etc/acpi.config"), Path.of(System.getProperty("user.home"), ".config", "acpi.config")};
+        val locations = new Path[]{Path.of("/etc/icpi.config"), Path.of(System.getProperty("user.home"), ".config", "icpi.config")};
         val location = Arrays.stream(locations).filter(Files::exists).findFirst();
         if (location.isEmpty())
             return Failable.fail(String.format("No config file was found in the following locations: %s", Arrays.toString(locations)));

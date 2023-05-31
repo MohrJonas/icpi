@@ -4,9 +4,10 @@ import com.google.inject.Inject;
 import lombok.val;
 import mohr.jonas.icpi.DistroboxAdapter;
 import mohr.jonas.icpi.cli.Spinner;
-import mohr.jonas.icpi.cli.Terminal;
+import mohr.jonas.icpi.cli.TerminalUtils;
 import mohr.jonas.icpi.data.Config;
 import org.jetbrains.annotations.Nullable;
+import org.jline.terminal.Terminal;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +23,8 @@ public class Update {
     @Inject
     private Spinner spinner;
     @Inject
-    private Terminal terminal;
+    private TerminalUtils terminalUtils;
+    @Inject private Terminal terminal;
 
     @Inject
     public Update(Logger logger) {
@@ -36,14 +38,14 @@ public class Update {
                 adapter.updatePackageInContainer(containerName, template.update());
                 return null;
             }));
-            terminal.success("Done");
+            terminalUtils.success(terminal, "Done");
         } else {
             Arrays.stream(config.containers()).forEach((template) -> {
                 spinner.spinUntilDone(String.format("Updating packages in container '%s'", template.name()), CompletableFuture.supplyAsync(() -> {
                     adapter.updatePackageInContainer(template.name(), template.update());
                     return null;
                 }));
-                terminal.success("Done");
+                terminalUtils.success(terminal, "Done");
             });
         }
         return 0;
