@@ -8,7 +8,7 @@
             <SchemaInfo>
               <option name="generatedName" value="New Schema" />
               <option name="name" value="Apex" />
-              <option name="relativePathToSchema" value="apex.schema.json" />
+              <option name="relativePathToSchema" value="icpi.schema.json" />
               <option name="patterns">
                 <list>
                   <Item>

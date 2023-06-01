@@ -1,13 +1,35 @@
 {
+  "$schema": "https://raw.githubusercontent.com/MohrJonas/icpi/main/icpi.schema.json",
   "containers": [
     {
       "name": "apt",
-      "install": "DEBIAN_FRONTEND=noninteractive apt install {{ args }}",
-      "image": "docker.io/library/debian:stable"
+      "image": "docker.io/library/debian:stable",
+      "setup": "apt update && apt install -y debianutils",
+      "install": "sudo apt install -y {{ packages|join(' ') }}",
+      "search": "apt search {{ packages|join(' ') }}",
+      "update": "sudo apt -y update",
+      "remove": "sudo apt remove -y {{ packages|join(' ') }}"
     },
     {
       "name": "arch",
-      "image": "docker.io/library/archlinux:latest"
+      "image": "docker.io/library/archlinux:latest",
+      "setup": "pacman --noconfirm -Sy && pacman -S --needed --noconfirm bash which",
+      "install": "sudo pacman --noconfirm -S {{ packages|join(' ') }}",
+      "search": "pacman -Ss {{ packages|join(' ') }}",
+      "update": "sudo pacman -Syy",
+      "remove":"sudo pacman --noconfirm -Rs {{ packages|join(' ') }}"
+    },
+    {
+      "name": "dnf",
+      "image": "quay.io/fedora/fedora:38",
+      "setup": "dnf -y update && dnf -y install bash which",
+      "install": "sudo dnf install -y {{ packages|join(' ') }}",
+      "search": "dnf search {{ packages|join(' ') }}",
+      "update": "sudo dnf -y update",
+      "remove": "sudo dnf -y remove {{ packages|join(' ') }}"
     }
+  ],
+  "compatibleVersions": [
+    [1, 4, 0]
   ]
 }
